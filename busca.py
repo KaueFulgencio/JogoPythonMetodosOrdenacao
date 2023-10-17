@@ -6,19 +6,19 @@ import busca_profundidade
 import busca_gulosa
 import busca_a
 
-def busca_largura():
+def exec_busca_largura():
     #messagebox.showinfo("Busca em Largura", "Você selecionou Busca em Largura")
     busca_largura.busca_largura(grafo, inicio, objetivo)
     
-def busca_profundidade():
+def exec_busca_profundidade():
     messagebox.showinfo("Busca em Profundidade", "Você selecionou Busca em Profundidade")
     busca_profundidade.busca_profundidade(grafo, inicio, objetivo, visitados)
 
-def busca_gulosa():
+def exec_busca_gulosa():
     messagebox.showinfo("Busca Gulosa", "Você selecionou Busca Gulosa")
     busca_gulosa.busca_gulosa(grafo, inicio, objetivo)
 
-def busca_a_estrela():
+def exec_busca_a_estrela():
     messagebox.showinfo("Busca A*", "Você selecionou Busca A*")
     busca_a.busca_a_estrela(grafo, inicio, objetivo)
 

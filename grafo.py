@@ -1,5 +1,7 @@
 import random
 
+import random
+
 # Definição do grafo com recompensas e tipos de terreno
 grafo = {
     (0, 0): [(0, 1)],
@@ -21,39 +23,38 @@ grafo = {
     (4, 3): [(4, 4)],
     (4, 4): [(4, 5)],
     (4, 5): [],
+    # Adicione mais conexões conforme necessário
 }
 
-# Embaralhe o grafo
-keys = list(grafo.keys())
-random.shuffle(keys)
-grafo = {key: grafo[key] for key in keys}
-
-# Dicionário de tipos de terreno e recompensas
+# Definição dos tipos de terreno e recompensas
 tipos_terreno = {
-    (0, 0): "Solido e plano",
-    (0, 1): "Solido e plano",
-    (0, 2): "Solido e plano",
-    (1, 1): "Solido e plano",
-    (0, 3): "Solido e plano",
-    (1, 3): "Solido e plano",
-    (1, 4): "Solido e plano",
-    (2, 1): "Solido e plano",
-    (3, 1): "Solido e plano",
-    (1, 3): "Solido e plano",
-    (1, 5): "Solido e plano",
-    (2, 4): "Solido e plano",
-    (2, 5): "Solido e plano",
-    (3, 5): "Solido e plano",
-    (4, 1): "Solido e plano",
-    (4, 2): "Solido e plano",
-    (4, 3): "Solido e plano",
-    (4, 4): "Solido e plano",
-    (4, 5): "Solido e plano",
+    (0, 0): "Parede",
+    (0, 1): "Terreno Normal",
+    (0, 2): "Terreno Rochoso",
+    (1, 1): "Terreno Normal",
+    (0, 3): "Terreno Arenoso",
+    (1, 3): "Terreno Normal",
+    (1, 4): "Terreno Normal",
+    (2, 1): "Terreno Normal",
+    (3, 1): "Terreno Pantanoso",
+    (1, 3): "Terreno Normal",
+    (1, 5): "Terreno Normal",
+    (2, 4): "Terreno Normal",
+    (2, 5): "Terreno Normal",
+    (3, 5): "Terreno Normal",
+    (4, 1): "Terreno Normal",
+    (4, 2): "Terreno Normal",
+    (4, 3): "Terreno Normal",
+    (4, 4): "Terreno Normal",
+    (4, 5): "Parede",
 }
 
 recompensas = {
-    (1, 1): 10,  # Exemplo de recompensa na posição (1, 1)
-    (3, 3): 5,   # Exemplo de recompensa na posição (3, 3)
+    (0, 1): 2,
+    (0, 3): 5,
+    (1, 4): 10,
+    (4, 1): 3,
+    (3, 5): 8,
     # Adicione mais recompensas conforme necessário
 }
 
@@ -61,7 +62,11 @@ recompensas = {
 ponto_inicial = (0, 0)
 objetivo = (4, 5)
 
-# Função para calcular o custo com base no tipo de terreno
+# Embaralhe o grafo
+keys = list(grafo.keys())
+random.shuffle(keys)
+grafo = {key: grafo[key] for key in keys}
+
 def calcular_custo(posicao_atual, posicao_vizinha):
     terreno_atual = tipos_terreno.get(posicao_atual, "Desconhecido")
     terreno_vizinho = tipos_terreno.get(posicao_vizinha, "Desconhecido")
