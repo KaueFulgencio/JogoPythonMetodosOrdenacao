@@ -9,6 +9,12 @@ AGENT_COLOR = (255, 0, 0)
 BLOCK_SIZE = 20
 SLEEP_TIME = 100  
 
+#custo dos terrenos
+CUSTO_SOLIDO = 1
+CUSTO_ROCHOSO = 10
+CUSTO_ARENSOSO = 4
+CUSTO_PANTANO = 20
+
 grafo = {
     (0, 0): [(0, 1)],
     (0, 1): [(0, 2), (1, 1)],
@@ -30,6 +36,8 @@ grafo = {
     (4, 4): [(4, 5)],
     (4, 5): [],
 }
+
+
 
 pygame.init()
 
@@ -53,9 +61,13 @@ def draw_environment():
 def busca_largura(grafo, inicio, objetivo):
     fila = deque()
     visitados = set()
+    custo = {}  # Dicionário para rastrear o custo de cada posição
+    posicao = {}  # Dicionário para rastrear a posição do agente
 
     fila.append(inicio)
     visitados.add(inicio)
+    custo[inicio] = 0
+    posicao[inicio] = inicio
 
     while fila:
         for event in pygame.event.get():
@@ -68,6 +80,8 @@ def busca_largura(grafo, inicio, objetivo):
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
 
+        print(f"Posição: {vertice}, Custo: {custo[vertice]}")  # Imprime a posição e o custo
+
         if vertice == objetivo:
             return True
 
@@ -75,14 +89,20 @@ def busca_largura(grafo, inicio, objetivo):
             if vizinho not in visitados:
                 fila.append(vizinho)
                 visitados.add(vizinho)
+                custo[vizinho] = custo[vertice] + calcular_custo(vertice, vizinho)  # Atualiza o custo
+                posicao[vizinho] = vizinho  # Atualiza a posição
 
     return False
+
+# Função para calcular o custo com base no tipo de terreno
+def calcular_custo(posicao_atual, posicao_vizinha):
+    # implementar a lógica para verificar o tipo de terreno e atribuir o custo correspondente
+    return CUSTO_SOLIDO
 
 # Ponto de partida e objetivo
 inicio = (0, 0)
 objetivo = (4, 5)
 
-# Executa a busca em largura
 if busca_largura(grafo, inicio, objetivo):
     print("Caminho encontrado!")
     # Após a conclusão da busca, mostra o botão "Retornar ao Menu"
