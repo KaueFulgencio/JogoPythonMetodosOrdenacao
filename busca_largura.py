@@ -7,37 +7,15 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (255, 0, 0)
 BLOCK_SIZE = 20
-SLEEP_TIME = 100  
+SLEEP_TIME = 100
 
-#custo dos terrenos
-CUSTO_SOLIDO = 1
-CUSTO_ROCHOSO = 10
-CUSTO_ARENSOSO = 4
-CUSTO_PANTANO = 20
-
-grafo = {
-    (0, 0): [(0, 1)],
-    (0, 1): [(0, 2), (1, 1)],
-    (0, 2): [(0, 3)],
-    (1, 1): [(2, 1)],
-    (0, 3): [(1, 3)],
-    (1, 3): [(1, 4)],
-    (1, 4): [(2, 4)],
-    (2, 1): [(3, 1)],
-    (3, 1): [(4, 1)],
-    (1, 3): [(1, 5)],
-    (1, 5): [(2, 5)],
-    (2, 4): [(2, 5)],
-    (2, 5): [(3, 5)],
-    (3, 5): [(4, 5)],
-    (4, 1): [(4, 2)],
-    (4, 2): [(4, 3)],
-    (4, 3): [(4, 4)],
-    (4, 4): [(4, 5)],
-    (4, 5): [],
-}
-
-
+# Carregar o grafo a partir do arquivo "grafo.py"
+try:
+    grafo = {}
+    exec(open("grafo.py").read())
+except FileNotFoundError:
+    print("Arquivo 'grafo.py' não encontrado.")
+    sys.exit()
 
 pygame.init()
 
@@ -97,7 +75,7 @@ def busca_largura(grafo, inicio, objetivo):
 # Função para calcular o custo com base no tipo de terreno
 def calcular_custo(posicao_atual, posicao_vizinha):
     # implementar a lógica para verificar o tipo de terreno e atribuir o custo correspondente
-    return CUSTO_SOLIDO
+    return 1
 
 # Ponto de partida e objetivo
 inicio = (0, 0)

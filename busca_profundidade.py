@@ -8,38 +8,14 @@ AGENT_COLOR = (255, 0, 0)
 BLOCK_SIZE = 20
 SLEEP_TIME = 100
 
-# Crie um grafo para a busca em profundidade
-# Substitua esta definição de grafo pelo seu grafo personalizado
-grafo = {
-    (0, 0): [(0, 1)],
-    (0, 1): [(0, 2), (1, 1)],
-    (0, 2): [(0, 3)],
-    (1, 1): [(2, 1)],
-    (0, 3): [(1, 3)],
-    (1, 3): [(1, 4)],
-    (1, 4): [(2, 4)],
-    (2, 1): [(3, 1)],
-    (3, 1): [(4, 1)],
-    (1, 3): [(1, 5)],
-    (1, 5): [(2, 5)],
-    (2, 4): [(2, 5)],
-    (2, 5): [(3, 5)],
-    (3, 5): [(4, 5)],
-    (4, 1): [(4, 2)],
-    (4, 2): [(4, 3)],
-    (4, 3): [(4, 4)],
-    (4, 4): [(4, 5)],
-    (4, 5): [],
-}
-
 pygame.init()
 
 # Cria a tela
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca em Profundidade")
 
-# Desenha o ambiente
-def draw_environment():
+# Função para exibir o ambiente
+def draw_environment(grafo):
     screen.fill(BG_COLOR)
     for pos, neighbors in grafo.items():
         x, y = pos
@@ -48,7 +24,7 @@ def draw_environment():
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
 
 # Função para a busca em profundidade
-def busca_profundidade(grafo, inicio, objetivo, visitados):
+def busca_profundidade(grafo, inicio, objetivo, visitados, recompensas):
     if inicio == objetivo:
         return True
 
@@ -57,9 +33,13 @@ def busca_profundidade(grafo, inicio, objetivo, visitados):
     pygame.display.update()
     pygame.time.delay(SLEEP_TIME)
 
+    if inicio in recompensas:
+        recompensa = recompensas[inicio]
+        print(f"Posição: {inicio}, Recompensa: {recompensa}")
+
     for vizinho in grafo[inicio]:
         if vizinho not in visitados:
-            if busca_profundidade(grafo, vizinho, objetivo, visitados):
+            if busca_profundidade(grafo, vizinho, objetivo, visitados, recompensas):
                 return True
 
     return False
@@ -68,15 +48,31 @@ def busca_profundidade(grafo, inicio, objetivo, visitados):
 inicio = (0, 0)
 objetivo = (4, 5)
 
+# Carregue o grafo a partir de "grafo.py"
+try:
+    grafo = {}
+    exec(open("grafo.py").read())
+except FileNotFoundError:
+    print("Arquivo 'grafo.py' não encontrado.")
+    sys.exit()
+
 # Conjunto para rastrear os vértices visitados
 visitados = set()
 
-if busca_profundidade(grafo, inicio, objetivo, visitados):
+# Dicionário para rastrear as recompensas nas posições
+recompensas = {
+    (1, 1): 10,  # Exemplo de recompensa na posição (1, 1)
+    (3, 3): 5,   # Exemplo de recompensa na posição (3, 3)
+    # Adicione mais recompensas conforme necessário
+}
+
+draw_environment(grafo)
+
+if busca_profundidade(grafo, inicio, objetivo, visitados, recompensas):
     print("Caminho encontrado!")
 else:
     print("Caminho não encontrado.")
 
-# Mantém a janela aberta até o usuário fechar
 running = True
 while running:
     for event in pygame.event.get():

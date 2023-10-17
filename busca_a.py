@@ -9,35 +9,20 @@ AGENT_COLOR = (255, 0, 0)
 BLOCK_SIZE = 20
 SLEEP_TIME = 100
 
-# Crie um grafo para a busca A*
-# Substitua esta definição de grafo pelo seu grafo personalizado
-grafo = {
-    (0, 0): [(0, 1)],
-    (0, 1): [(0, 2), (1, 1)],
-    (0, 2): [(0, 3)],
-    (1, 1): [(2, 1)],
-    (0, 3): [(1, 3)],
-    (1, 3): [(1, 4)],
-    (1, 4): [(2, 4)],
-    (2, 1): [(3, 1)],
-    (3, 1): [(4, 1)],
-    (1, 3): [(1, 5)],
-    (1, 5): [(2, 5)],
-    (2, 4): [(2, 5)],
-    (2, 5): [(3, 5)],
-    (3, 5): [(4, 5)],
-    (4, 1): [(4, 2)],
-    (4, 2): [(4, 3)],
-    (4, 3): [(4, 4)],
-    (4, 4): [(4, 5)],
-    (4, 5): [],
-}
-
 pygame.init()
 
 # Crie a tela
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca A*")
+
+# Carregue o grafo a partir de "grafo.py"
+try:
+    grafo = {}
+    recompensas = {}
+    exec(open("grafo.py").read())
+except FileNotFoundError:
+    print("Arquivo 'grafo.py' não encontrado.")
+    sys.exit()
 
 # Desenhe o ambiente
 def draw_environment():
@@ -47,6 +32,12 @@ def draw_environment():
         pygame.draw.rect(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
         for neighbor in neighbors:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
+    for recompensa, valor in recompensas.items():
+        x, y = recompensa
+        pygame.draw.rect(screen, (255, 255, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+        font = pygame.font.Font(None, 36)
+        recompensa_text = font.render(str(valor), True, (0, 0, 0))
+        screen.blit(recompensa_text, (x * BLOCK_SIZE + BLOCK_SIZE // 3, y * BLOCK_SIZE + BLOCK_SIZE // 3))
 
 # Função para calcular a heurística (distância) entre dois pontos
 def calcular_heuristica(ponto, objetivo):
@@ -55,7 +46,7 @@ def calcular_heuristica(ponto, objetivo):
     return abs(x1 - x2) + abs(y1 - y2)
 
 # Função para a busca A*
-def busca_a_estrela(grafo, inicio, objetivo):
+def busca_a_estrela(grafo, inicio, objetivo, recompensas):
     fila_prioridade = PriorityQueue()
     fila_prioridade.put((0, inicio))
     visitados = set()
@@ -82,6 +73,8 @@ def busca_a_estrela(grafo, inicio, objetivo):
         pygame.time.delay(SLEEP_TIME)
 
         print(f"Posição: {vertice}, Custo: {custo[vertice]}")  # Imprime a posição e o custo
+        if vertice in recompensas:
+            print(f"Recompensa: {recompensas[vertice]}")  # Exibe a recompensa, se existir
 
         if vertice == objetivo:
             return True
@@ -99,14 +92,16 @@ def busca_a_estrela(grafo, inicio, objetivo):
 
 # Função para calcular o custo com base no tipo de terreno
 def calcular_custo(posicao_atual, posicao_vizinha):
-    # implementar a lógica para verificar o tipo de terreno e atribuir o custo correspondente
-    return 1
+    # Implemente a lógica para verificar o tipo de terreno e atribuir o custo correspondente
+    return 1  # Custo padrão
 
 # Ponto de partida e objetivo
 inicio = (0, 0)
 objetivo = (4, 5)
 
-if busca_a_estrela(grafo, inicio, objetivo):
+draw_environment()
+
+if busca_a_estrela(grafo, inicio, objetivo, recompensas):
     print("Caminho encontrado!")
 else:
     print("Caminho não encontrado.")
