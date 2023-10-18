@@ -47,17 +47,12 @@ def calcular_heuristica(ponto, objetivo):
     return abs(x1 - x2) + abs(y1 - y2)
 
 # Função para a busca gulosa
-def busca_gulosa(inicio, objetivo):
-    global grafo
-    global recompensas
-
+def busca_gulosa(grafo, inicio, objetivo, recompensas):
     fila_prioridade = PriorityQueue()
     fila_prioridade.put((0, inicio))
     visitados = set()
-    custo = {}  # Dicionário para rastrear o custo de cada posição
     posicao = {}  # Dicionário para rastrear a posição do agente
 
-    custo[inicio] = 0
     posicao[inicio] = inicio
 
     while not fila_prioridade.empty():
@@ -76,7 +71,7 @@ def busca_gulosa(inicio, objetivo):
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
 
-        print(f"Posição: {vertice}, Custo: {custo[vertice]}")  # Imprime a posição e o custo
+        print(f"Posição: {vertice}")  # Imprime a posição
         if vertice in recompensas:
             print(f"Recompensa: {recompensas[vertice]}")  # Exibe a recompensa, se existir
 
@@ -91,9 +86,8 @@ def busca_gulosa(inicio, objetivo):
 
     return False
 
-# Função para calcular o custo com base no tipo de terreno
+# Função para calcular o custo com base no tipo de terreno (não utilizado na busca gulosa)
 def calcular_custo(posicao_atual, posicao_vizinha):
-    # Implemente a lógica para verificar o tipo de terreno e atribuir o custo correspondente
     return 1  # Custo padrão
 
 # Ponto de partida e objetivo
@@ -111,7 +105,7 @@ recompensas = {
 
 draw_environment()
 
-if busca_gulosa(inicio, objetivo):
+if busca_gulosa(grafo, inicio, objetivo, recompensas):
     print("Caminho encontrado!")
 else:
     print("Caminho não encontrado.")

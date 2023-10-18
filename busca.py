@@ -1,50 +1,38 @@
 import tkinter as tk
 from tkinter import messagebox
-
 import busca_largura
 import busca_profundidade
 import busca_gulosa
 import busca_a
 
-def executar_busca_largura():
-    grafo = busca_largura.carregar_grafo()
-    inicio = (0, 0)  
-    objetivo = (2, 3)  # Defina o objetivo aqui
-    busca_largura.busca_largura(grafo, inicio, objetivo)
-    
-def executar_busca_profundidade():
-    grafo = busca_profundidade.carregar_grafo()
-    inicio = (0, 0)  # Defina o ponto de partida aqui
-    objetivo = (3, 5)  # Defina o objetivo aqui
-    busca_profundidade.busca_profundidade(grafo, inicio, objetivo)
-    
-def executar_busca_gulosa():
-    grafo = busca_gulosa.carregar_grafo()
-    inicio = (0, 0)  # Defina o ponto de partida aqui
-    objetivo = (4, 5)  # Defina o objetivo aqui
-    busca_gulosa.busca_gulosa(grafo, inicio, objetivo)
-    
-def executar_busca_a_estrela():
-    grafo = busca_a.carregar_grafo()
-    inicio = (0, 0)  # Defina o ponto de partida aqui
-    objetivo = (1, 3)  # Defina o objetivo aqui
-    busca_a.busca_a_estrela(grafo, inicio, objetivo)
+def executar_busca(algoritmo, inicio, objetivo):
+    try:
+        grafo = algoritmo.carregar_grafo()
+        resultado = algoritmo.busca(grafo, inicio, objetivo)
+        if resultado:
+            messagebox.showinfo("Resultado", "Caminho encontrado!")
+        else:
+            messagebox.showinfo("Resultado", "Caminho não encontrado.")
+    except Exception as e:
+        messagebox.showerror("Erro", f"Ocorreu um erro: {str(e)}")
 
-if __name__ == "__main__":
+def criar_janela():
     root = tk.Tk()
     root.title("Algoritmo de Busca")
     root.geometry("400x300")
 
-    button_back = tk.Button(root, text="Busca em Largura", command=executar_busca_largura)
-    button_back.pack()
-
-    button_back = tk.Button(root, text="Busca em Profundidade", command=executar_busca_profundidade)
-    button_back.pack()
-
-    button_back = tk.Button(root, text="Busca Gulosa", command=executar_busca_gulosa)
-    button_back.pack()
-
-    button_back = tk.Button(root, text="Busca A*", command=executar_busca_a_estrela)
-    button_back.pack()
+    botao_busca("Busca em Largura", busca_largura, (0, 0), (2, 3))
+    botao_busca("Busca em Profundidade", busca_profundidade, (1, 0), (1, 2))
+    botao_busca("Busca Gulosa", busca_gulosa, (0, 0), (4, 5))
+    botao_busca("Busca A*", busca_a, (0, 0), (1, 3))
 
     root.mainloop()
+
+def botao_busca(texto, algoritmo, inicio, objetivo):
+    button = tk.Button(root, text=texto, command=lambda algo=algoritmo, ini=inicio, obj=objetivo: executar_busca(algo, ini, obj))
+    button.pack()
+
+if __name__ == "__main__":
+    root = None  # Declare a variável root no escopo global
+
+    criar_janela()

@@ -3,18 +3,22 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 
 def open_busca_largura():
+    root.destroy()
     import busca
     busca.busca_largura()
 
 def open_busca_profundidade():
+    root.destroy()
     import busca
     busca.busca_profundidade()
 
 def open_busca_gulosa():
+    root.destroy()
     import busca
     busca.busca_gulosa()
 
 def open_busca_a_estrela():
+    root.destroy()
     import busca
     busca.busca_a_estrela()
 
