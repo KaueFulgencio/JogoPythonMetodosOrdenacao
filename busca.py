@@ -6,20 +6,28 @@ import busca_profundidade
 import busca_gulosa
 import busca_a
 
-def exec_busca_largura():
-    #messagebox.showinfo("Busca em Largura", "Você selecionou Busca em Largura")
+def executar_busca_largura():
+    grafo = busca_largura.carregar_grafo()
+    inicio = (0, 0)  
+    objetivo = (2, 3)  # Defina o objetivo aqui
     busca_largura.busca_largura(grafo, inicio, objetivo)
     
-def exec_busca_profundidade():
-    messagebox.showinfo("Busca em Profundidade", "Você selecionou Busca em Profundidade")
-    busca_profundidade.busca_profundidade(grafo, inicio, objetivo, visitados)
-
-def exec_busca_gulosa():
-    messagebox.showinfo("Busca Gulosa", "Você selecionou Busca Gulosa")
+def executar_busca_profundidade():
+    grafo = busca_profundidade.carregar_grafo()
+    inicio = (0, 0)  # Defina o ponto de partida aqui
+    objetivo = (3, 5)  # Defina o objetivo aqui
+    busca_profundidade.busca_profundidade(grafo, inicio, objetivo)
+    
+def executar_busca_gulosa():
+    grafo = busca_gulosa.carregar_grafo()
+    inicio = (0, 0)  # Defina o ponto de partida aqui
+    objetivo = (4, 5)  # Defina o objetivo aqui
     busca_gulosa.busca_gulosa(grafo, inicio, objetivo)
-
-def exec_busca_a_estrela():
-    messagebox.showinfo("Busca A*", "Você selecionou Busca A*")
+    
+def executar_busca_a_estrela():
+    grafo = busca_a.carregar_grafo()
+    inicio = (0, 0)  # Defina o ponto de partida aqui
+    objetivo = (1, 3)  # Defina o objetivo aqui
     busca_a.busca_a_estrela(grafo, inicio, objetivo)
 
 if __name__ == "__main__":
@@ -27,7 +35,16 @@ if __name__ == "__main__":
     root.title("Algoritmo de Busca")
     root.geometry("400x300")
 
-    button_back = tk.Button(root, text="Voltar para o Menu", command=root.destroy)
+    button_back = tk.Button(root, text="Busca em Largura", command=executar_busca_largura)
+    button_back.pack()
+
+    button_back = tk.Button(root, text="Busca em Profundidade", command=executar_busca_profundidade)
+    button_back.pack()
+
+    button_back = tk.Button(root, text="Busca Gulosa", command=executar_busca_gulosa)
+    button_back.pack()
+
+    button_back = tk.Button(root, text="Busca A*", command=executar_busca_a_estrela)
     button_back.pack()
 
     root.mainloop()

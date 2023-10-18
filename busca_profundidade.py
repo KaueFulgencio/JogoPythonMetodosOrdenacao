@@ -29,6 +29,16 @@ def draw_environment(ambiente, recompensas):
     pygame.draw.rect(screen, AGENT_COLOR, (agente[0] * BLOCK_SIZE, agente[1] * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))  # Agente
     pygame.display.update()
 
+
+def carregar_grafo():
+    grafo = {}
+    # Carregue o grafo a partir do arquivo "grafo.py"
+    try:
+        exec(open("grafo.py").read())
+    except FileNotFoundError:
+        print("Arquivo 'grafo.py' não encontrado.")
+    return grafo
+
 # Função para a busca em profundidade
 def busca_profundidade(ambiente, agente, objetivo, visitados, recompensas):
     x, y = agente
@@ -51,7 +61,7 @@ def busca_profundidade(ambiente, agente, objetivo, visitados, recompensas):
 
     return False
 
-# Carregue o ambiente a partir de "grafo.py"
+# Carregue o ambiente a partir de "ambiente.txt"
 try:
     ambiente = [list(row) for row in open("ambiente.txt").read().splitlines()]
     agente = (1, 1)  # Ponto de partida

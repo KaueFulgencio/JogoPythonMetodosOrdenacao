@@ -15,14 +15,15 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca Gulosa")
 
-# Carregue o grafo a partir de "grafo.py"
-try:
+# Função para carregar o grafo
+def carregar_grafo():
     grafo = {}
-    recompensas = {}
-    exec(open("grafo.py").read())
-except FileNotFoundError:
-    print("Arquivo 'grafo.py' não encontrado.")
-    sys.exit()
+    # Carregue o grafo a partir do arquivo "grafo.py"
+    try:
+        exec(open("grafo.py").read())
+    except FileNotFoundError:
+        print("Arquivo 'grafo.py' não encontrado.")
+    return grafo
 
 # Desenhe o ambiente
 def draw_environment():
@@ -46,7 +47,10 @@ def calcular_heuristica(ponto, objetivo):
     return abs(x1 - x2) + abs(y1 - y2)
 
 # Função para a busca gulosa
-def busca_gulosa(grafo, inicio, objetivo, recompensas):
+def busca_gulosa(inicio, objetivo):
+    global grafo
+    global recompensas
+
     fila_prioridade = PriorityQueue()
     fila_prioridade.put((0, inicio))
     visitados = set()
@@ -96,9 +100,18 @@ def calcular_custo(posicao_atual, posicao_vizinha):
 inicio = (0, 0)
 objetivo = (4, 5)
 
+# Carregue o grafo
+grafo = carregar_grafo()
+
+# Dicionário para rastrear as recompensas nas posições
+recompensas = {
+    (2, 2): 10,  # Exemplo de recompensa na posição (2, 2)
+    (4, 3): 5,   # Exemplo de recompensa na posição (4, 3)
+}
+
 draw_environment()
 
-if busca_gulosa(grafo, inicio, objetivo, recompensas):
+if busca_gulosa(inicio, objetivo):
     print("Caminho encontrado!")
 else:
     print("Caminho não encontrado.")

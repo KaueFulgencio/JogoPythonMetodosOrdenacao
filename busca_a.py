@@ -16,13 +16,14 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca A*")
 
 # Carregue o grafo a partir de "grafo.py"
-try:
+def carregar_grafo():
     grafo = {}
-    recompensas = {}
-    exec(open("grafo.py").read())
-except FileNotFoundError:
-    print("Arquivo 'grafo.py' não encontrado.")
-    sys.exit()
+    # Carregue o grafo a partir do arquivo "grafo.py"
+    try:
+        exec(open("grafo.py").read())
+    except FileNotFoundError:
+        print("Arquivo 'grafo.py' não encontrado.")
+    return grafo
 
 # Desenhe o ambiente
 def draw_environment():

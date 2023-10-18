@@ -5,29 +5,32 @@ from collections import deque
 # Defina o tamanho da tela e outras constantes
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
-AGENT_COLOR = (255, 0, 0)
+AGENT_COLOR = (255, 255, 0)
 BLOCK_SIZE = 20
 SLEEP_TIME = 100
-
-# Carregar o grafo a partir do arquivo "grafo.py"
-try:
-    grafo = {}
-    exec(open("grafo.py").read())
-except FileNotFoundError:
-    print("Arquivo 'grafo.py' não encontrado.")
-    sys.exit()
 
 pygame.init()
 
 def fechar_busca_largura():
     pygame.quit()
+    sys.exit()
 
 # Cria a tela
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca em Largura")
 
-# Desenha o ambiente
-def draw_environment():
+def carregar_grafo():
+    grafo = {}
+    # Carregue o grafo a partir do arquivo "grafo.py"
+    try:
+        exec(open("grafo.py").read())
+    except FileNotFoundError:
+        print("Arquivo 'grafo.py' não encontrado.")
+    return grafo
+
+
+# Função para desenhar o ambiente
+def draw_environment(grafo):
     screen.fill(BG_COLOR)
     for pos, neighbors in grafo.items():
         x, y = pos
@@ -39,19 +42,16 @@ def draw_environment():
 def busca_largura(grafo, inicio, objetivo):
     fila = deque()
     visitados = set()
-    custo = {}  # Dicionário para rastrear o custo de cada posição
-    posicao = {}  # Dicionário para rastrear a posição do agente
+    custo = {inicio: 0}  # Dicionário para rastrear o custo de cada posição
+    posicao = {inicio: inicio}  # Dicionário para rastrear a posição do agente
 
     fila.append(inicio)
     visitados.add(inicio)
-    custo[inicio] = 0
-    posicao[inicio] = inicio
 
     while fila:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                fechar_busca_largura()
 
         vertice = fila.popleft()
         pygame.draw.rect(screen, AGENT_COLOR, (vertice[0] * BLOCK_SIZE, vertice[1] * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
@@ -68,14 +68,21 @@ def busca_largura(grafo, inicio, objetivo):
                 fila.append(vizinho)
                 visitados.add(vizinho)
                 custo[vizinho] = custo[vertice] + calcular_custo(vertice, vizinho)  # Atualiza o custo
-                posicao[vizinho] = vizinho  # Atualiza a posição
+                posicao[vizinho] = vertice  # Atualiza a posição
 
     return False
 
-# Função para calcular o custo com base no tipo de terreno
+# Função para calcular o custo com base no tipo de terreno (a ser implementada)
 def calcular_custo(posicao_atual, posicao_vizinha):
-    # implementar a lógica para verificar o tipo de terreno e atribuir o custo correspondente
     return 1
+
+# Carregar o grafo a partir do arquivo "grafo.py"
+try:
+    grafo = {}
+    exec(open("grafo.py").read())
+except FileNotFoundError:
+    print("Arquivo 'grafo.py' não encontrado.")
+    sys.exit()
 
 # Ponto de partida e objetivo
 inicio = (0, 0)
@@ -83,24 +90,9 @@ objetivo = (4, 5)
 
 if busca_largura(grafo, inicio, objetivo):
     print("Caminho encontrado!")
-    # Após a conclusão da busca, mostra o botão "Retornar ao Menu"
-    retornar_button = pygame.draw.rect(screen, (0, 0, 255), (650, 10, 140, 40))
-    font = pygame.font.Font(None, 36)
-    retornar_text = font.render("Menu", True, (255, 255, 255))
-    screen.blit(retornar_text, (660, 20))
-    pygame.display.update()
-else:
-    print("Caminho não encontrado.")
 
 # Mantém a janela aberta até o usuário fechar
-running = True
-while running:
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if retornar_button.collidepoint(event.pos):
-                fechar_busca_largura()
-
-pygame.quit()
-sys.exit()
+            fechar_busca_largura()
