@@ -91,7 +91,7 @@ def calcular_custo(posicao_atual, posicao_vizinha):
     return 1  # Custo padrão
 
 # Ponto de partida e objetivo
-inicio = (0, 0)
+inicio = (1, 1)
 objetivo = (4, 5)
 
 # Carregue o grafo
@@ -110,7 +110,6 @@ if busca_gulosa(grafo, inicio, objetivo, recompensas):
 else:
     print("Caminho não encontrado.")
 
-# Mantém a janela aberta até o usuário fechar
 running = True
 while running:
     for event in pygame.event.get():

@@ -13,7 +13,7 @@ def open_busca_profundidade():
     busca.busca_profundidade()
 
 def open_busca_gulosa():
-    root.destroy()
+    root.destroy() #fecha o menu principal
     import busca
     busca.busca_gulosa()
 

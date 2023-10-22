@@ -33,6 +33,6 @@ def botao_busca(texto, algoritmo, inicio, objetivo):
     button.pack()
 
 if __name__ == "__main__":
-    root = None  # Declare a variável root no escopo global
+    root = None  
 
     criar_janela()
