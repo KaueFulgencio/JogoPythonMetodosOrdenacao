@@ -18,10 +18,10 @@ def fechar_busca_profundidade():
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca em Profundidade")
 
-grafo = carregar_grafo("grafo.py")  # Carregue o grafo (se necessário).
+grafo = carregar_grafo("grafo.py")  
 
-inicio = (0, 0)
-objetivo = (10, 12)
+inicio = (10, 12)
+objetivo = (0, 0)
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
@@ -31,7 +31,7 @@ def draw_environment(grafo):
         for neighbor in neighbors:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
 
-def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None):
+def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0):
     if visitados is None:
         visitados = set()
 
@@ -40,17 +40,20 @@ def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None):
     pygame.display.update()
     pygame.time.delay(SLEEP_TIME)
 
-    print(f"Posição: {inicio}")
+    print(f"Posição: {inicio}, Custo: {custo}")
 
     if inicio == objetivo:
         return True
 
     for vizinho in grafo[inicio]['conexoes']:
         if vizinho not in visitados:
-            if busca_profundidade(screen, grafo, vizinho, objetivo, visitados):
+            if busca_profundidade(screen, grafo, vizinho, objetivo, visitados, custo + calcular_custo(inicio, vizinho)):
                 return True
 
     return False
+
+def calcular_custo(posicao_atual, posicao_vizinha):
+    return 1  # Modifique essa função para calcular o custo com base nas posições
 
 if busca_profundidade(screen, grafo, inicio, objetivo):
     print("Caminho encontrado!")
