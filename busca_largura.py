@@ -1,12 +1,12 @@
 import pygame
 import sys
 from collections import deque
+from busca import carregar_grafo, executar_busca
 
-# Defina o tamanho da tela e outras constantes
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (255, 255, 0)
-BLOCK_SIZE = 20
+BLOCK_SIZE = 70
 SLEEP_TIME = 100
 
 pygame.init()
@@ -15,21 +15,14 @@ def fechar_busca_largura():
     pygame.quit()
     sys.exit()
 
-# Cria a tela
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca em Largura")
 
-def carregar_grafo():
-    grafo = {}
-    # Carregue o grafo a partir do arquivo "grafo.py"
-    try:
-        exec(open("grafo.py").read())
-    except FileNotFoundError:
-        print("Arquivo 'grafo.py' não encontrado.")
-    return grafo
+grafo = carregar_grafo("grafo.py")
 
+inicio = (2, 2)
+objetivo = (4, 5)
 
-# Função para desenhar o ambiente
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
     for pos, neighbors in grafo.items():
@@ -38,12 +31,11 @@ def draw_environment(grafo):
         for neighbor in neighbors:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
 
-# Função para a busca em largura
-def busca_largura(grafo, inicio, objetivo):
+def busca_largura(screen, grafo, inicio, objetivo):
     fila = deque()
     visitados = set()
-    custo = {inicio: 0}  # Dicionário para rastrear o custo de cada posição
-    posicao = {inicio: inicio}  # Dicionário para rastrear a posição do agente
+    custo = {inicio: 0}
+    posicao = {inicio: inicio}
 
     fila.append(inicio)
     visitados.add(inicio)
@@ -68,7 +60,7 @@ def busca_largura(grafo, inicio, objetivo):
                 fila.append(vizinho)
                 visitados.add(vizinho)
                 custo[vizinho] = custo[vertice] + calcular_custo(vertice, vizinho)  # Atualiza o custo
-                posicao[vizinho] = vertice  # Atualiza a posição
+                posicao[vizinho] = vertice  
 
     return False
 
@@ -76,22 +68,9 @@ def busca_largura(grafo, inicio, objetivo):
 def calcular_custo(posicao_atual, posicao_vizinha):
     return 1
 
-# Carregar o grafo a partir do arquivo "grafo.py"
-try:
-    grafo = {}
-    exec(open("grafo.py").read())
-except FileNotFoundError:
-    print("Arquivo 'grafo.py' não encontrado.")
-    sys.exit()
-
-# Ponto de partida e objetivo
-inicio = (0, 0)
-objetivo = (4, 5)
-
-if busca_largura(grafo, inicio, objetivo):
+if busca_largura(screen, grafo, inicio, objetivo):
     print("Caminho encontrado!")
 
-# Mantém a janela aberta até o usuário fechar
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

@@ -1,38 +1,19 @@
-import tkinter as tk
-from tkinter import messagebox
-import busca_largura
-import busca_profundidade
-import busca_gulosa
-import busca_a
+from grafo import grafo
 
-def executar_busca(algoritmo, inicio, objetivo):
+def carregar_grafo(nome_arquivo):
+    grafo = {}
     try:
-        grafo = algoritmo.carregar_grafo()
-        resultado = algoritmo.busca(grafo, inicio, objetivo)
-        if resultado:
-            messagebox.showinfo("Resultado", "Caminho encontrado!")
-        else:
-            messagebox.showinfo("Resultado", "Caminho não encontrado.")
+        local_vars = {}
+        exec(open(nome_arquivo).read(), {}, local_vars)
+        grafo = local_vars.get('grafo', {})
+    except FileNotFoundError:
+        print(f"Arquivo '{nome_arquivo}' não encontrado.")
+    return grafo
+
+def executar_busca(grafo, algoritmo, inicio, objetivo):
+    try:
+        resultado = algoritmo(grafo, inicio, objetivo)
+        return resultado
     except Exception as e:
-        messagebox.showerror("Erro", f"Ocorreu um erro: {str(e)}")
-
-def criar_janela():
-    root = tk.Tk()
-    root.title("Algoritmo de Busca")
-    root.geometry("400x300")
-
-    botao_busca("Busca em Largura", busca_largura, (0, 0), (2, 3))
-    botao_busca("Busca em Profundidade", busca_profundidade, (1, 0), (1, 2))
-    botao_busca("Busca Gulosa", busca_gulosa, (0, 0), (4, 5))
-    botao_busca("Busca A*", busca_a, (0, 0), (1, 3))
-
-    root.mainloop()
-
-def botao_busca(texto, algoritmo, inicio, objetivo):
-    button = tk.Button(root, text=texto, command=lambda algo=algoritmo, ini=inicio, obj=objetivo: executar_busca(algo, ini, obj))
-    button.pack()
-
-if __name__ == "__main__":
-    root = None  
-
-    criar_janela()
+        print(f"Ocorreu um erro: {str(e)}")
+        return None
