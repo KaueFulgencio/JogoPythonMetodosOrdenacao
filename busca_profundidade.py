@@ -1,9 +1,6 @@
 import pygame
 import sys
-
 from collections import deque
-from queue import PriorityQueue
-
 from busca import carregar_grafo, executar_busca
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
@@ -21,10 +18,10 @@ def fechar_busca_profundidade():
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca em Profundidade")
 
-grafo = carregar_grafo("grafo.py")
+grafo = carregar_grafo("grafo.py")  # Carregue o grafo (se necessário).
 
-inicio = (0,0)
-objetivo = (2,2)
+inicio = (0, 0)
+objetivo = (10, 12)
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
@@ -33,7 +30,6 @@ def draw_environment(grafo):
         pygame.draw.rect(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
         for neighbor in neighbors:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
-
 
 def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None):
     if visitados is None:
@@ -49,13 +45,12 @@ def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None):
     if inicio == objetivo:
         return True
 
-    for vizinho in grafo[inicio]:
+    for vizinho in grafo[inicio]['conexoes']:
         if vizinho not in visitados:
             if busca_profundidade(screen, grafo, vizinho, objetivo, visitados):
                 return True
 
     return False
-
 
 if busca_profundidade(screen, grafo, inicio, objetivo):
     print("Caminho encontrado!")

@@ -1,13 +1,12 @@
 import pygame
 import sys
 from queue import PriorityQueue
-
-from busca import carregar_grafo, executar_busca
+from busca import carregar_grafo  # Importe a função de carregar o grafo (se necessário).
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (255, 0, 0)
-BLOCK_SIZE = 70
+BLOCK_SIZE = 50
 SLEEP_TIME = 100
 
 pygame.init()
@@ -19,18 +18,10 @@ def fechar_busca_gulosa():
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca Gulosa")
 
-grafo = carregar_grafo("grafo.py")
+grafo = carregar_grafo("grafo.py")  
 
-inicio = (2,2)
-objetivo = (3,5)
-
-def draw_environment(grafo):
-    screen.fill(BG_COLOR)
-    for pos, neighbors in grafo.items():
-        x, y = pos
-        pygame.draw.rect(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
-        for neighbor in neighbors:
-            pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
+inicio = (5, 5)
+objetivo = (10, 10)
 
 def calcular_heuristica(ponto, objetivo):
     x1, y1 = ponto
@@ -41,14 +32,12 @@ def busca_gulosa(screen, grafo, inicio, objetivo):
     fila_prioridade = PriorityQueue()
     fila_prioridade.put((0, inicio))
     visitados = set()
-    posicao = {}  
-    posicao[inicio] = inicio
+    posicao = {inicio: inicio}
 
     while not fila_prioridade.empty():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                fechar_busca_gulosa()
 
         _, vertice = fila_prioridade.get()
 
@@ -56,28 +45,36 @@ def busca_gulosa(screen, grafo, inicio, objetivo):
             continue
 
         visitados.add(vertice)
-        pygame.draw.rect(screen, AGENT_COLOR, (vertice[0] * BLOCK_SIZE, vertice[1] * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+        x, y = vertice
+        pygame.draw.circle(screen, AGENT_COLOR, (x * BLOCK_SIZE + BLOCK_SIZE // 2, y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
 
-        print(f"Posição: {vertice}") 
+        print(f"Posição: ({x}, {y})")
 
         if vertice == objetivo:
-            return True
+            return reconstruir_caminho(posicao, inicio, objetivo)
 
-        for vizinho in grafo[vertice]:
+        for vizinho in grafo[vertice]['conexoes']:
             if vizinho not in visitados:
                 prioridade = calcular_heuristica(vizinho, objetivo)
                 fila_prioridade.put((prioridade, vizinho))
                 posicao[vizinho] = vertice
 
-    return False
+    return None
 
-def calcular_custo(posicao_atual, posicao_vizinha):
-    return 1  
+def reconstruir_caminho(posicao, inicio, objetivo):
+    caminho = [objetivo]
+    atual = objetivo
+    while atual != inicio:
+        atual = posicao[atual]
+        caminho.append(atual)
+    caminho.reverse()
+    return caminho
 
-if busca_gulosa(screen, grafo, inicio, objetivo):
-    print("Caminho encontrado!")
+caminho = busca_gulosa(screen, grafo, inicio, objetivo)
+if caminho:
+    print("Caminho encontrado:", caminho)
 else:
     print("Caminho não encontrado.")
 

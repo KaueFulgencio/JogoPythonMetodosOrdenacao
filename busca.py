@@ -1,4 +1,4 @@
-from grafo import grafo
+from grafo import grafo, recompensas, custos
 
 def carregar_grafo(nome_arquivo):
     grafo = {}
@@ -17,3 +17,4 @@ def executar_busca(grafo, algoritmo, inicio, objetivo):
     except Exception as e:
         print(f"Ocorreu um erro: {str(e)}")
         return None
+

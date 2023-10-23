@@ -46,27 +46,44 @@ def busca_largura(screen, grafo, inicio, objetivo):
                 fechar_busca_largura()
 
         vertice = fila.popleft()
-        pygame.draw.rect(screen, AGENT_COLOR, (vertice[0] * BLOCK_SIZE, vertice[1] * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+        
+        #Define a formula do agente
+        x, y = vertice  # Acesse diretamente a posição do vértice
+        pygame.draw.circle(screen, AGENT_COLOR, (x * BLOCK_SIZE + BLOCK_SIZE // 2, y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
 
-        print(f"Posição: {vertice}, Custo: {custo[vertice]}")  # Imprime a posição e o custo
+        print(f"Posição: ({x}, {y}), Custo: {custo[vertice]}")
 
         if vertice == objetivo:
             return True
 
-        for vizinho in grafo[vertice]:
+        for vizinho in grafo[vertice]['conexoes']:
             if vizinho not in visitados:
                 fila.append(vizinho)
                 visitados.add(vizinho)
-                custo[vizinho] = custo[vertice] + calcular_custo(vertice, vizinho)  # Atualiza o custo
-                posicao[vizinho] = vertice  
+                custo[vizinho] = custo[vertice] + calcular_custo(vertice, vizinho)
+                posicao[vizinho] = vertice
 
     return False
 
-# Função para calcular o custo com base no tipo de terreno (a ser implementada)
+
+
 def calcular_custo(posicao_atual, posicao_vizinha):
     return 1
+
+def calcular_custo_terreno(terreno_atual, terreno_vizinho):
+    custos = {
+        'solido': 1,
+        'rochoso': 10,
+        'arenoso': 4,
+        'pantano': 20
+    }
+
+    custo_atual = custos.get(terreno_atual, 1)
+    custo_vizinho = custos.get(terreno_vizinho, 1)
+
+    return max(custo_atual, custo_vizinho)
 
 if busca_largura(screen, grafo, inicio, objetivo):
     print("Caminho encontrado!")
