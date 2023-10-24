@@ -44,7 +44,7 @@ def draw_environment(grafo):
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
     #pass
 
-def busca_largura(screen, grafo, inicio, objetivo):
+def busca_teste(screen, grafo, inicio, objetivo):
     fila = deque()
     visitados = set()
     custo = {inicio: 0}
@@ -96,7 +96,7 @@ def calcular_custo_terreno(terreno_atual, terreno_vizinho):
 
     return max(custo_atual, custo_vizinho)
 
-if busca_largura(screen, grafo, inicio, objetivo):
+if busca_teste(screen, grafo, inicio, objetivo):
     print("Caminho encontrado!")
 
 while True:

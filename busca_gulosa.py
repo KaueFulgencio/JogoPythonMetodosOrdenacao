@@ -1,7 +1,7 @@
 import pygame
 import sys
 from queue import PriorityQueue
-from busca import carregar_grafo  # Importe a função de carregar o grafo (se necessário).
+from busca import carregar_grafo  
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
