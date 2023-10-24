@@ -7,7 +7,7 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (155, 0, 100)
 BLOCK_SIZE = 50
-SLEEP_TIME = 100
+SLEEP_TIME = 1000
 
 pygame.init()
 
@@ -20,8 +20,8 @@ pygame.display.set_caption("Busca A*")
 
 grafo = carregar_grafo("grafo.py")
 
-inicio = (2, 0)
-objetivo = (4, 5)
+inicio = (6, 7)
+objetivo = (0, 0)
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)

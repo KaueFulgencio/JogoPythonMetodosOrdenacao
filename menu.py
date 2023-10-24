@@ -49,7 +49,7 @@ def open_busca_a_estrela():
 
 root = tk.Tk()
 root.title("Menu de Algoritmos de Busca")
-root.geometry("800x600")
+root.geometry("600x400")
 root.resizable(0, 0)
 
 background_path = os.path.join("images", "background.jpg")
@@ -62,26 +62,26 @@ canvas = tk.Canvas(root, width=800, height=600)
 canvas.pack()
 canvas.create_image(0, 0, anchor=tk.NW, image=bg_photo)
 
-label_objetivo = tk.Label(root, text="Digite o objetivo")
-label_objetivo.place(relx=0.1, rely=0.04)
-entrada_objetivo = Entry(root)
-entrada_objetivo.place(relx=0.1, rely=0.1)
-
 label_inicio = tk.Label(root, text="Digite o inicio")
-label_inicio.place(relx=0.1, rely=0.15)
+label_inicio.place(relx=0.1, rely=0.14)
 entrada_inicio = Entry(root)
 entrada_inicio.place(relx=0.1, rely=0.2)
 
+label_objetivo = tk.Label(root, text="Digite o objetivo")
+label_objetivo.place(relx=0.1, rely=0.34)
+entrada_objetivo = Entry(root)
+entrada_objetivo.place(relx=0.1, rely=0.4)
+
 button_largura = tk.Button(canvas, text="Busca em Largura", command=open_busca_largura)
-button_largura.place(relx=0.1, rely=0.5)
+button_largura.place(relx=0.1, rely=0.6)
 
 button_profundidade = tk.Button(canvas, text="Busca em Profundidade", command=open_busca_profundidade)
-button_profundidade.place(relx=0.3, rely=0.5)
+button_profundidade.place(relx=0.3, rely=0.6)
 
 button_gulosa = tk.Button(canvas, text="Busca Gulosa", command=open_busca_gulosa)
-button_gulosa.place(relx=0.55, rely=0.5)
+button_gulosa.place(relx=0.57, rely=0.6)
 
 button_a_estrela = tk.Button(canvas, text="Busca A*", command=open_busca_a_estrela)
-button_a_estrela.place(relx=0.74, rely=0.5)
+button_a_estrela.place(relx=0.74, rely=0.6)
 
 root.mainloop()
