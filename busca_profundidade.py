@@ -20,8 +20,8 @@ pygame.display.set_caption("Busca em Profundidade")
 
 grafo = carregar_grafo("grafo.py")  
 
-inicio = (10, 12)
-objetivo = (0, 0)
+inicio = (6, 7)
+objetivo = (2, 2)
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
@@ -53,7 +53,7 @@ def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0)
     return False
 
 def calcular_custo(posicao_atual, posicao_vizinha):
-    return 1  # Modifique essa função para calcular o custo com base nas posições
+    return 1  
 
 if busca_profundidade(screen, grafo, inicio, objetivo):
     print("Caminho encontrado!")

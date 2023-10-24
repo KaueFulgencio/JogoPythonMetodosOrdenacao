@@ -20,8 +20,8 @@ pygame.display.set_caption("Busca A*")
 
 grafo = carregar_grafo("grafo.py")
 
-inicio = (2, 2)
-objetivo = (3, 5)
+inicio = (2, 0)
+objetivo = (4, 5)
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)

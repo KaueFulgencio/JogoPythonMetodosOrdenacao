@@ -9,6 +9,15 @@ AGENT_COLOR = (255, 255, 0)
 BLOCK_SIZE = 70
 SLEEP_TIME = 100
 
+TERRENO_CORES = {
+    'solida': (139, 69, 19),  
+    'arenosa': (255, 255, 0),  
+    'rochosa': (192, 192, 192),  
+    'pantano': (0, 128, 0),  
+    'premio': (255, 0, 0),  
+    'recompensa': (0, 0, 255)  
+}
+
 pygame.init()
 
 def fechar_busca_largura():
@@ -20,16 +29,20 @@ pygame.display.set_caption("Busca em Largura")
 
 grafo = carregar_grafo("grafo.py")
 
-inicio = (2, 2)
+inicio = (0, 2)
 objetivo = (4, 5)
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
-    for pos, neighbors in grafo.items():
+    for pos, data in grafo.items():
         x, y = pos
+        terreno = data['terreno']
+        cor = TERRENO_CORES.get(terreno, (255, 255, 255))
+        pygame.draw.rect(screen, cor, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
         pygame.draw.rect(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
-        for neighbor in neighbors:
+        for neighbor in data['conexoes']:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
+
 
 def busca_largura(screen, grafo, inicio, objetivo):
     fila = deque()
@@ -47,8 +60,7 @@ def busca_largura(screen, grafo, inicio, objetivo):
 
         vertice = fila.popleft()
         
-        #Define a formula do agente
-        x, y = vertice  # Acesse diretamente a posição do vértice
+        x, y = vertice 
         pygame.draw.circle(screen, AGENT_COLOR, (x * BLOCK_SIZE + BLOCK_SIZE // 2, y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
@@ -68,15 +80,14 @@ def busca_largura(screen, grafo, inicio, objetivo):
     return False
 
 
-
 def calcular_custo(posicao_atual, posicao_vizinha):
     return 1
 
 def calcular_custo_terreno(terreno_atual, terreno_vizinho):
     custos = {
-        'solido': 1,
-        'rochoso': 10,
-        'arenoso': 4,
+        'solida': 1,  
+        'rochosa': 10,
+        'arenosa': 4,
         'pantano': 20
     }
 
