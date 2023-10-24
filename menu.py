@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, Entry
 from PIL import Image, ImageTk
 import os
 
@@ -61,6 +61,16 @@ bg_photo = ImageTk.PhotoImage(bg_image)
 canvas = tk.Canvas(root, width=800, height=600)
 canvas.pack()
 canvas.create_image(0, 0, anchor=tk.NW, image=bg_photo)
+
+label_objetivo = tk.Label(root, text="Digite o objetivo")
+label_objetivo.place(relx=0.1, rely=0.04)
+entrada_objetivo = Entry(root)
+entrada_objetivo.place(relx=0.1, rely=0.1)
+
+label_inicio = tk.Label(root, text="Digite o inicio")
+label_inicio.place(relx=0.1, rely=0.15)
+entrada_inicio = Entry(root)
+entrada_inicio.place(relx=0.1, rely=0.2)
 
 button_largura = tk.Button(canvas, text="Busca em Largura", command=open_busca_largura)
 button_largura.place(relx=0.1, rely=0.5)
