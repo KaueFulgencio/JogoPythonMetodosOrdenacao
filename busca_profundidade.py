@@ -9,6 +9,15 @@ AGENT_COLOR = (255, 50, 100)
 BLOCK_SIZE = 70
 SLEEP_TIME = 1000
 
+try:
+    inicio_x = int(sys.argv[1])
+    inicio_y = int(sys.argv[2])
+    objetivo_x = int(sys.argv[3])
+    objetivo_y = int(sys.argv[4])
+except ValueError:
+    print("Erro: Os valores de início e objetivo devem ser números inteiros válidos.")
+    sys.exit(1)
+
 pygame.init()
 
 def fechar_busca_profundidade():
@@ -20,8 +29,6 @@ pygame.display.set_caption("Busca em Profundidade")
 
 grafo = carregar_grafo("grafo.py")  
 
-inicio = (6, 7)
-objetivo = (2, 2)
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
@@ -55,7 +62,7 @@ def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0)
 def calcular_custo(posicao_atual, posicao_vizinha):
     return 1  
 
-if busca_profundidade(screen, grafo, inicio, objetivo):
+if busca_profundidade(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y)):
     print("Caminho encontrado!")
 else:
     print("Caminho não encontrado.")

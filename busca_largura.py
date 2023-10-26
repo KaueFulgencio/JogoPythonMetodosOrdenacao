@@ -17,6 +17,15 @@ TERRENO_CORES = {
     'premio': (255, 0, 0),  
     'recompensa': (0, 0, 255)  
 }
+#só aceita valor inteiro vindo do input
+try:
+    inicio_x = int(sys.argv[1])
+    inicio_y = int(sys.argv[2])
+    objetivo_x = int(sys.argv[3])
+    objetivo_y = int(sys.argv[4])
+except ValueError:
+    print("Erro: Os valores de início e objetivo devem ser números inteiros válidos.")
+    sys.exit(1)
 
 pygame.init()
 
@@ -29,8 +38,6 @@ pygame.display.set_caption("Busca em Largura")
 
 grafo = carregar_grafo("grafo.py")
 
-inicio = (0, 2)
-objetivo = (4, 5)
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
@@ -96,7 +103,7 @@ def calcular_custo_terreno(terreno_atual, terreno_vizinho):
 
     return max(custo_atual, custo_vizinho)
 
-if busca_largura(screen, grafo, inicio, objetivo):
+if busca_largura(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y)):
     print("Caminho encontrado!")
 
 while True:

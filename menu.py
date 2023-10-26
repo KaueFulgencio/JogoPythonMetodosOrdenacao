@@ -2,50 +2,49 @@ import tkinter as tk
 from tkinter import messagebox, Entry
 from PIL import Image, ImageTk
 import os
+import subprocess
+
 
 def open_busca_largura():
-    import busca_largura
-    resultado = busca_largura.main()
+    inicio_x = entrada_inicio.get()
+    inicio_y = entrada_inicio2.get()
+    objetivo_x = entrada_objetivo.get()
+    objetivo_y = entrada_objetivo2.get()
 
-    tk.messagebox.showinfo("Tela da Busca em Largura", "Você está na tela da Busca em Largura")
+    subprocess.run(["python", "busca_largura.py", inicio_x, inicio_y, objetivo_x, objetivo_y])
 
-    if resultado:
-        tk.messagebox.showinfo("Resultado", "Caminho encontrado!")
-    else:
-        tk.messagebox.showinfo("Resultado", "Caminho não encontrado")
+    tk.messagebox.showinfo("Tela da Busca em Largura", "Você saiu da tela da Busca em Largura")
 
 def open_busca_profundidade():
-    import busca_profundidade
-    resultado = busca_profundidade.main()
 
-    tk.messagebox.showinfo("Tela da Busca em Profundidade", "Você está na tela da Busca em Profundidade")
+    inicio_x = entrada_inicio.get()
+    inicio_y = entrada_inicio2.get()
+    objetivo_x = entrada_objetivo.get()
+    objetivo_y = entrada_objetivo2.get()
 
-    if resultado:
-        tk.messagebox.showinfo("Resultado", "Caminho encontrado!")
-    else:
-        tk.messagebox.showinfo("Resultado", "Caminho não encontrado")
+    subprocess.run(["python", "busca_profundidade.py", inicio_x, inicio_y, objetivo_x, objetivo_y])
+
+    tk.messagebox.showinfo("Busca em Profundidade", "Você saiu da tela da Busca em Profundidade")
 
 def open_busca_gulosa():
-    import busca_gulosa
-    resultado = busca_gulosa.main()
+    inicio_x = entrada_inicio.get()
+    inicio_y = entrada_inicio2.get()
+    objetivo_x = entrada_objetivo.get()
+    objetivo_y = entrada_objetivo2.get()
 
-    tk.messagebox.showinfo("Tela da Busca Gulosa", "Você está na tela da Busca Gulosa")
+    subprocess.run(["python", "busca_gulosa.py", inicio_x, inicio_y, objetivo_x, objetivo_y])
 
-    if resultado:
-        tk.messagebox.showinfo("Resultado", "Caminho encontrado!")
-    else:
-        tk.messagebox.showinfo("Resultado", "Caminho não encontrado")
+    tk.messagebox.showinfo("Busca Gulosa", "Você saiu da tela da Busca Gulosa")
 
 def open_busca_a_estrela():
-    import busca_a
-    resultado = busca_a.main()
+    inicio_x = entrada_inicio.get()
+    inicio_y = entrada_inicio2.get()
+    objetivo_x = entrada_objetivo.get()
+    objetivo_y = entrada_objetivo2.get()
 
-    tk.messagebox.showinfo("Tela da Busca A*", "Você está na tela da Busca A*")
+    subprocess.run(["python", "busca_a.py", inicio_x, inicio_y, objetivo_x, objetivo_y])
 
-    if resultado:
-        tk.messagebox.showinfo("Resultado", "Caminho encontrado!")
-    else:
-        tk.messagebox.showinfo("Resultado", "Caminho não encontrado")
+    tk.messagebox.showinfo("Busca A*", "Você saiu da tela da Busca A*")
 
 root = tk.Tk()
 root.title("Menu de Algoritmos de Busca")
@@ -66,11 +65,15 @@ label_inicio = tk.Label(root, text="Digite o inicio")
 label_inicio.place(relx=0.1, rely=0.14)
 entrada_inicio = Entry(root)
 entrada_inicio.place(relx=0.1, rely=0.2)
+entrada_inicio2 = Entry(root)
+entrada_inicio2.place(relx=0.35, rely=0.2)
 
 label_objetivo = tk.Label(root, text="Digite o objetivo")
 label_objetivo.place(relx=0.1, rely=0.34)
 entrada_objetivo = Entry(root)
 entrada_objetivo.place(relx=0.1, rely=0.4)
+entrada_objetivo2 = Entry(root)
+entrada_objetivo2.place(relx=0.35, rely=0.4)
 
 button_largura = tk.Button(canvas, text="Busca em Largura", command=open_busca_largura)
 button_largura.place(relx=0.1, rely=0.6)
