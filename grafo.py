@@ -7,8 +7,15 @@ grafo = {
     (1, 2): {'terreno': 'solida', 'custo': 1, 'conexoes': [(0, 2), (1, 1)]},
     (2, 0): {'terreno': 'rochosa', 'custo': 10, 'conexoes': [(1, 0), (2, 1)]},
     (2, 1): {'terreno': 'solida', 'custo': 1, 'conexoes': [(1, 1), (2, 0), (2, 2)]},
-    (2, 2): {'terreno': 'solida', 'custo': 1, 'conexoes': [(1, 2), (2, 1), (3, 3)]},
+    (2, 2): {'terreno': 'solida', 'custo': 1, 'conexoes': [(1, 2), (2, 1), (3, 0)]},
+    (3, 0): {'terreno': 'solida', 'custo': 1, 'conexoes': [(2, 0), (3, 1), (4, 0)]},
+    (3, 1): {'terreno': 'rochosa', 'custo': 10, 'conexoes': [(2, 1), (3, 0), (3, 2)]},
+    (3, 2): {'terreno': 'solida', 'custo': 1, 'conexoes': [(2, 2), (3, 1), (3, 3)]},
     (3, 3): {'terreno': 'solida', 'custo': 1, 'conexoes': [(2, 2), (4, 5)]},
+    (4, 0): {'terreno': 'solida', 'custo': 1, 'conexoes': [(3, 0), (4, 1)]},
+    (4, 1): {'terreno': 'arenosa', 'custo': 4, 'conexoes': [(3, 1), (4, 0), (4, 2)]},
+    (4, 2): {'terreno': 'solida', 'custo': 1, 'conexoes': [(3, 2), (4, 1), (4, 3)]},
+    (4, 3): {'terreno': 'solida', 'custo': 1, 'conexoes': [(3, 3), (4, 2), (5, 3)]},
     (4, 5): {'terreno': 'pantano', 'custo': 20, 'conexoes': [(3, 3), (5, 5)]},
     (5, 5): {'terreno': 'solida', 'custo': 1, 'conexoes': [(4, 5), (6, 6)]},
     (6, 6): {'terreno': 'solida', 'custo': 1, 'conexoes': [(5, 5), (6, 7)]},
@@ -21,7 +28,8 @@ grafo = {
     (10, 10): {'terreno': 'pantano', 'custo': 20, 'conexoes': [(9, 10), (10, 11)]},
     (10, 11): {'terreno': 'arenosa', 'custo': 4, 'conexoes': [(10, 10), (10, 12)]},
     (10, 12): {'terreno': 'solida', 'custo': 1, 'conexoes': [(10, 11)]}
-}
+    
+}   
 custos = {
     (0, 0): 1,  # Terreno sólido e plano
     (0, 1): 1,  # Terreno sólido e plano

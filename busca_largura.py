@@ -5,7 +5,7 @@ from busca import carregar_grafo, executar_busca
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
-AGENT_COLOR = (255, 255, 0)
+AGENT_COLOR = (0, 0, 0)
 BLOCK_SIZE = 50
 SLEEP_TIME = 1000
 #Dicionario dos terrenos
