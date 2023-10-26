@@ -8,7 +8,15 @@ BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (155, 0, 100)
 BLOCK_SIZE = 50
 SLEEP_TIME = 1000
-
+#Dicionario dos terrenos 
+TERRENO_CORES = {
+    'solida': (139, 69, 19),
+    'arenosa': (255, 255, 0),
+    'rochosa': (192, 192, 192),
+    'pantano': (0, 128, 0),
+    'premio': (255, 0, 0),
+    'recompensa': (0, 0, 255)
+}
 #só aceita valor inteiro vindo do input
 try:
     inicio_x = int(sys.argv[1])
@@ -32,11 +40,19 @@ grafo = carregar_grafo("grafo.py")
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
-    for pos, neighbors in grafo.items():
+    for pos, data in grafo.items():
         x, y = pos
+        terreno = data['terreno']
+        cor = TERRENO_CORES.get(terreno, (255, 255, 255))
+        pygame.draw.rect(screen, cor, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
         pygame.draw.rect(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
-        for neighbor in neighbors:
+        for neighbor in data['conexoes']:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
+
+draw_environment(grafo) 
+pygame.display.update()
+
+print(grafo)
 
 def calcular_heuristica(ponto, objetivo):
     x1, y1 = ponto

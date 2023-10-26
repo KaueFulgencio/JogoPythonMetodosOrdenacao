@@ -6,18 +6,18 @@ from busca import carregar_grafo, executar_busca
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (255, 255, 0)
-BLOCK_SIZE = 70
+BLOCK_SIZE = 50
 SLEEP_TIME = 1000
-
+#Dicionario dos terrenos
 TERRENO_CORES = {
-    'solida': (139, 69, 19),  
-    'arenosa': (255, 255, 0),  
-    'rochosa': (192, 192, 192),  
-    'pantano': (0, 128, 0),  
-    'premio': (255, 0, 0),  
-    'recompensa': (0, 0, 255)  
+    'solida': (139, 69, 19),
+    'arenosa': (255, 255, 0),
+    'rochosa': (192, 192, 192),
+    'pantano': (0, 128, 0),
+    'premio': (255, 0, 0),
+    'recompensa': (0, 0, 255)
 }
-#só aceita valor inteiro vindo do input
+# Só aceita valor inteiro vindo do input
 try:
     inicio_x = int(sys.argv[1])
     inicio_y = int(sys.argv[2])
@@ -32,6 +32,7 @@ pygame.init()
 def fechar_busca_largura():
     pygame.quit()
     sys.exit()
+
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca em Largura")
@@ -49,7 +50,12 @@ def draw_environment(grafo):
         pygame.draw.rect(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
         for neighbor in data['conexoes']:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
-    #pass
+
+
+draw_environment(grafo) 
+pygame.display.update()
+
+print(grafo)
 
 def busca_largura(screen, grafo, inicio, objetivo):
     fila = deque()
@@ -66,8 +72,8 @@ def busca_largura(screen, grafo, inicio, objetivo):
                 fechar_busca_largura()
 
         vertice = fila.popleft()
-        
-        x, y = vertice 
+
+        x, y = vertice
         pygame.draw.circle(screen, AGENT_COLOR, (x * BLOCK_SIZE + BLOCK_SIZE // 2, y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
@@ -92,7 +98,7 @@ def calcular_custo(posicao_atual, posicao_vizinha):
 
 def calcular_custo_terreno(terreno_atual, terreno_vizinho):
     custos = {
-        'solida': 1,  
+        'solida': 1,
         'rochosa': 10,
         'arenosa': 4,
         'pantano': 20
@@ -102,6 +108,7 @@ def calcular_custo_terreno(terreno_atual, terreno_vizinho):
     custo_vizinho = custos.get(terreno_vizinho, 1)
 
     return max(custo_atual, custo_vizinho)
+
 
 if busca_largura(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y)):
     print("Caminho encontrado!")
