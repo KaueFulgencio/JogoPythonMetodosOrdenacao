@@ -7,14 +7,13 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (0, 0, 0)
 BLOCK_SIZE = 40
-SLEEP_TIME = 100
+SLEEP_TIME = 1000
 TERRENO_CORES = {
     'solida': (139, 69, 19),
     'arenosa': (255, 255, 0),
     'rochosa': (192, 192, 192),
     'pantano': (0, 128, 0),
-    'premio': (255, 0, 0),
-    'recompensa': (0, 0, 255)
+    'recompensa': (255, 165, 0)
 }
 
 try:
@@ -34,12 +33,14 @@ def fechar_busca_largura():
     pygame.quit()
     sys.exit()
 
-def draw_environment(grafo):
+def desenha_mapa(grafo, recompensas):
     screen.fill(BG_COLOR)
     for pos, data in grafo.items():
         x, y = pos
         terreno = data['terreno']
         cor = TERRENO_CORES.get(terreno, (255, 255, 255))
+        if pos in recompensas:
+            cor = TERRENO_CORES['recompensa']  # Usar a cor laranja para as recompensas
         pygame.draw.rect(screen, cor, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
         pygame.draw.rect(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
         for neighbor in data['conexoes']:
@@ -50,7 +51,8 @@ def busca_largura(screen, grafo, inicio, objetivo, custos, recompensas):
     visitados = set()
     custo = {inicio: 0}
     posicao = {inicio: inicio}
-    custo_total = 0  
+    custo_total = 0
+    recompensa_total = 0  
 
     fila.append(inicio)
     visitados.add(inicio)
@@ -67,20 +69,24 @@ def busca_largura(screen, grafo, inicio, objetivo, custos, recompensas):
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
 
-        print(f"Posição: ({x}, {y}), Custo: {custo[vertice]}")
+        print(f"Posição: ({x}, {y}), Custo: {custo[vertice]}, Recompensa: {recompensa_total}")
 
         if vertice == objetivo:
             caminho = reconstruir_caminho(posicao, objetivo)
             print("Caminho percorrido:", caminho)
-            print("Preço final do percurso:", custo_total)  
+            print("Preço final do percurso (custo):", custo_total)
+            print("Recompensa total:", recompensa_total)
             return True
 
         for vizinho in grafo[vertice]['conexoes']:
             if vizinho not in visitados:
                 fila.append(vizinho)
                 visitados.add(vizinho)
-                custo[vizinho] = custo[vertice] + calcular_custo(vertice, vizinho)
-                custo_total += custo[vizinho]  
+                custo_vizinho = calcular_custo(vertice, vizinho)
+                custo[vizinho] = custo[vertice] + custo_vizinho
+                custo_total += custo_vizinho
+                recompensa_vizinho = recompensas.get(vizinho, 0)  
+                recompensa_total += recompensa_vizinho  
                 posicao[vizinho] = vertice
 
     return False
@@ -125,7 +131,7 @@ def carregar_dados():
     return grafo, recompensas, custos
 
 grafo, recompensas, custos = carregar_dados()
-draw_environment(grafo)  
+desenha_mapa(grafo, recompensas)  
 pygame.display.update()
 
 if busca_largura(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y), custos, recompensas):

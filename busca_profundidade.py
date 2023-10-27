@@ -1,7 +1,7 @@
 import pygame
 import sys
 from collections import deque
-from busca import carregar_grafo, executar_busca
+from grafo import grafo, recompensas, custos
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
@@ -14,9 +14,9 @@ TERRENO_CORES = {
     'arenosa': (255, 255, 0),
     'rochosa': (192, 192, 192),
     'pantano': (0, 128, 0),
-    'premio': (255, 0, 0),
-    'recompensa': (0, 0, 255)
+    'recompensa': (255, 165, 0)
 }
+
 try:
     inicio_x = int(sys.argv[1])
     inicio_y = int(sys.argv[2])
@@ -35,23 +35,23 @@ def fechar_busca_profundidade():
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca em Profundidade")
 
-grafo = carregar_grafo("grafo.py")
-
-def draw_environment(grafo):
+def desenha_mapa(grafo, recompensas):
     screen.fill(BG_COLOR)
     for pos, data in grafo.items():
         x, y = pos
         terreno = data['terreno']
         cor = TERRENO_CORES.get(terreno, (255, 255, 255))
+        if pos in recompensas:
+            cor = TERRENO_CORES['recompensa']  
         pygame.draw.rect(screen, cor, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
         pygame.draw.rect(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
         for neighbor in data['conexoes']:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
 
-draw_environment(grafo) 
+desenha_mapa(grafo, recompensas) 
 pygame.display.update()
 
-def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0):
+def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0, recompensa=0):
     if visitados is None:
         visitados = set()
 
@@ -61,21 +61,23 @@ def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0)
     pygame.display.update()
     pygame.time.delay(SLEEP_TIME)
 
-    print(f"Posição: {inicio}, Custo Acumulado: {custo}")
+    print(f"Posição: {inicio}, Custo: {custo}, Recompensa: {recompensa}")
 
     if inicio == objetivo:
-        return True, custo
+        return True, custo, recompensa
 
     for vizinho in grafo[inicio]['conexoes']:
         if vizinho not in visitados:
-            found, custo_vizinho = busca_profundidade(screen, grafo, vizinho, objetivo, visitados, custo + calcular_custo(inicio, vizinho))
+            custo_vizinho = calcular_custo(inicio, vizinho)
+            recompensa_vizinho = recompensas.get(vizinho, 0)
+            found, custo_vizinho, recompensa_vizinho = busca_profundidade(screen, grafo, vizinho, objetivo, visitados, custo + custo_vizinho, recompensa + recompensa_vizinho)
             if found:
-                return True, custo_vizinho
+                return True, custo_vizinho, recompensa_vizinho
 
     pygame.draw.circle(screen, (0, 0, 0), (x, y), AGENT_RADIUS)
     pygame.display.update()
 
-    return False, custo
+    return False, custo, recompensa
 
 def calcular_custo(posicao_atual, posicao_vizinha):
     terreno_atual = grafo[posicao_atual]['terreno']
@@ -93,10 +95,10 @@ def calcular_custo(posicao_atual, posicao_vizinha):
 
     return max(custo_atual, custo_vizinho)
 
-found, custo_acumulado = busca_profundidade(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y))
+found, custo_acumulado, recompensa_acumulada = busca_profundidade(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y))
 
 if found:
-    print(f"Caminho encontrado! Custo total: {custo_acumulado}")
+    print(f"Custo total: {custo_acumulado}, Recompensa total: {recompensa_acumulada}")
 else:
     print("Caminho não encontrado.")
 
