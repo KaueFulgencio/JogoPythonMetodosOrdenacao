@@ -1,7 +1,7 @@
 import pygame
 import sys
 from queue import PriorityQueue
-from busca import carregar_grafo, executar_busca
+from busca import carregar_grafo
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
@@ -9,7 +9,6 @@ AGENT_COLOR = (155, 0, 100)
 BLOCK_SIZE = 40
 AGENT_RADIUS = BLOCK_SIZE // 2
 SLEEP_TIME = 1000
-#Dicionario dos terrenos 
 TERRENO_CORES = {
     'solida': (139, 69, 19),
     'arenosa': (255, 255, 0),
@@ -18,7 +17,7 @@ TERRENO_CORES = {
     'premio': (255, 0, 0),
     'recompensa': (0, 0, 255)
 }
-#só aceita valor inteiro vindo do input
+# Aceita apenas valores inteiros como entrada
 try:
     inicio_x = int(sys.argv[1])
     inicio_y = int(sys.argv[2])
@@ -53,8 +52,6 @@ def draw_environment(grafo):
 draw_environment(grafo) 
 pygame.display.update()
 
-print(grafo)
-
 def calcular_heuristica(ponto, objetivo):
     x1, y1 = ponto
     x2, y2 = objetivo
@@ -66,9 +63,11 @@ def busca_a(screen, grafo, inicio, objetivo):
     visitados = set()
     custo = {}
     posicao = {}
+    custo_acumulado = {}
 
     custo[inicio] = 0
     posicao[inicio] = inicio
+    custo_acumulado[inicio] = 0
 
     while not fila_prioridade.empty():
         for event in pygame.event.get():
@@ -87,7 +86,7 @@ def busca_a(screen, grafo, inicio, objetivo):
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
 
-        print(f"Posição: {vertice}, Custo: {custo[vertice]}")
+        print(f"Posição: {vertice}, Custo Acumulado: {custo_acumulado[vertice]}")
 
         if vertice == objetivo:
             return True
@@ -100,6 +99,7 @@ def busca_a(screen, grafo, inicio, objetivo):
                     prioridade = novo_custo + calcular_heuristica(vizinho, objetivo)
                     fila_prioridade.put((prioridade, vizinho))
                     posicao[vizinho] = vertice
+                    custo_acumulado[vizinho] = custo_acumulado[vertice] + novo_custo
 
         pygame.draw.circle(screen, (0, 0, 0), (x_center, y_center), AGENT_RADIUS)
         pygame.display.update()
@@ -107,7 +107,20 @@ def busca_a(screen, grafo, inicio, objetivo):
     return False
 
 def calcular_custo(posicao_atual, posicao_vizinha):
-    return 1
+    terreno_atual = grafo[posicao_atual]['terreno']
+    terreno_vizinho = grafo[posicao_vizinha]['terreno']
+    
+    custos = {
+        'solida': 1,
+        'rochosa': 10,
+        'arenosa': 4,
+        'pantano': 20
+    }
+
+    custo_atual = custos.get(terreno_atual, 1)
+    custo_vizinho = custos.get(terreno_vizinho, 1)
+
+    return max(custo_atual, custo_vizinho)
 
 if busca_a(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y)):
     print("Caminho encontrado!")

@@ -72,7 +72,7 @@ def busca_largura(screen, grafo, inicio, objetivo, custos, recompensas):
         if vertice == objetivo:
             caminho = reconstruir_caminho(posicao, objetivo)
             print("Caminho percorrido:", caminho)
-            print("Preço final do percurso:", custo_total)  # Exibe o custo total
+            print("Preço final do percurso:", custo_total)  
             return True
 
         for vizinho in grafo[vertice]['conexoes']:

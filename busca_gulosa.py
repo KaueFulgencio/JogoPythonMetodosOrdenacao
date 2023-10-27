@@ -16,7 +16,8 @@ TERRENO_CORES = {
     'premio': (255, 0, 0),
     'recompensa': (0, 0, 255)
 }
-#só aceita valor inteiro vindo do input
+
+# Só aceita valor inteiro vindo do input
 try:
     inicio_x = int(sys.argv[1])
     inicio_y = int(sys.argv[2])
@@ -35,7 +36,7 @@ def fechar_busca_gulosa():
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca Gulosa")
 
-grafo = carregar_grafo("grafo.py")  
+grafo = carregar_grafo("grafo.py")
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
@@ -51,16 +52,14 @@ def draw_environment(grafo):
 draw_environment(grafo) 
 pygame.display.update()
 
-print(grafo)
-
 def calcular_heuristica(ponto, objetivo):
     x1, y1 = ponto
     x2, y2 = objetivo
     return abs(x1 - x2) + abs(y1 - y2)
 
-def busca_gulosa(screen, grafo, inicio, objetivo):
+def buscar_gulosa(screen, grafo, inicio, objetivo):
     fila_prioridade = PriorityQueue()
-    fila_prioridade.put((0, inicio))
+    fila_prioridade.put((0, inicio, 0))  
     visitados = set()
     posicao = {inicio: inicio}
 
@@ -69,7 +68,7 @@ def busca_gulosa(screen, grafo, inicio, objetivo):
             if event.type == pygame.QUIT:
                 fechar_busca_gulosa()
 
-        _, vertice = fila_prioridade.get()
+        _, vertice, custo_acumulado = fila_prioridade.get() 
 
         if vertice in visitados:
             continue
@@ -80,31 +79,53 @@ def busca_gulosa(screen, grafo, inicio, objetivo):
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
 
-        print(f"Posição: ({x}, {y})")
+        print(f"Posição: ({x}, {y}), Custo Acumulado: {custo_acumulado}")
 
         if vertice == objetivo:
-            return reconstruir_caminho(posicao, inicio, objetivo)
+            caminho, custo_total = reconstruir_caminho(posicao, inicio, objetivo, custo_acumulado)
+            return caminho, custo_total  
 
         for vizinho in grafo[vertice]['conexoes']:
             if vizinho not in visitados:
                 prioridade = calcular_heuristica(vizinho, objetivo)
-                fila_prioridade.put((prioridade, vizinho))
+                novo_custo_acumulado = custo_acumulado + calcular_custo(vertice, vizinho)
+                fila_prioridade.put((prioridade, vizinho, novo_custo_acumulado))
                 posicao[vizinho] = vertice
 
-    return None
+    return None, 0  
 
-def reconstruir_caminho(posicao, inicio, objetivo):
+def calcular_custo(posicao_atual, posicao_vizinha):
+    terreno_atual = grafo[posicao_atual]['terreno']
+    terreno_vizinho = grafo[posicao_vizinha]['terreno']
+    
+    custos = {
+        'solida': 1,
+        'rochosa': 10,
+        'arenosa': 4,
+        'pantano': 20
+    }
+
+    custo_atual = custos.get(terreno_atual, 1)
+    custo_vizinho = custos.get(terreno_vizinho, 1)
+
+    return max(custo_atual, custo_vizinho)
+
+def reconstruir_caminho(posicao, inicio, objetivo, custo_acumulado):
     caminho = [objetivo]
+    custo_total = custo_acumulado 
     atual = objetivo
     while atual != inicio:
-        atual = posicao[atual]
-        caminho.append(atual)
+        anterior = posicao[atual]
+        custo_total += calcular_custo(anterior, atual)  
+        caminho.append(anterior)
+        atual = anterior
     caminho.reverse()
-    return caminho
+    return caminho, custo_total
 
-caminho = busca_gulosa(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y))
+caminho, custo_total = buscar_gulosa(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y))
 if caminho:
     print("Caminho encontrado:", caminho)
+    print("Custo total da rota:", custo_total)
 else:
     print("Caminho não encontrado.")
 

@@ -9,7 +9,6 @@ AGENT_COLOR = (255, 50, 100)
 BLOCK_SIZE = 40
 AGENT_RADIUS = BLOCK_SIZE // 2
 SLEEP_TIME = 1000
-#Dicionario dos terrenos
 TERRENO_CORES = {
     'solida': (139, 69, 19),
     'arenosa': (255, 255, 0),
@@ -36,7 +35,7 @@ def fechar_busca_profundidade():
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Busca em Profundidade")
 
-grafo = carregar_grafo("grafo.py")  
+grafo = carregar_grafo("grafo.py")
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
@@ -52,39 +51,52 @@ def draw_environment(grafo):
 draw_environment(grafo) 
 pygame.display.update()
 
-print(grafo)
-
 def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0):
     if visitados is None:
         visitados = set()
 
     visitados.add(inicio)
-    x, y = inicio[0] * BLOCK_SIZE + BLOCK_SIZE // 2, inicio[1] * BLOCK_SIZE + BLOCK_SIZE // 2  # Encontre o centro do bloco
-    pygame.draw.circle(screen, AGENT_COLOR, (x, y), AGENT_RADIUS)  # Desenhe um círculo para representar o agente
+    x, y = inicio[0] * BLOCK_SIZE + BLOCK_SIZE // 2, inicio[1] * BLOCK_SIZE + BLOCK_SIZE // 2  
+    pygame.draw.circle(screen, AGENT_COLOR, (x, y), AGENT_RADIUS)  
     pygame.display.update()
     pygame.time.delay(SLEEP_TIME)
 
-    print(f"Posição: {inicio}, Custo: {custo}")
+    print(f"Posição: {inicio}, Custo Acumulado: {custo}")
 
     if inicio == objetivo:
-        return True
+        return True, custo
 
     for vizinho in grafo[inicio]['conexoes']:
         if vizinho not in visitados:
-            if busca_profundidade(screen, grafo, vizinho, objetivo, visitados, custo + calcular_custo(inicio, vizinho)):
-                return True
+            found, custo_vizinho = busca_profundidade(screen, grafo, vizinho, objetivo, visitados, custo + calcular_custo(inicio, vizinho))
+            if found:
+                return True, custo_vizinho
 
     pygame.draw.circle(screen, (0, 0, 0), (x, y), AGENT_RADIUS)
     pygame.display.update()
 
-    return False
-
+    return False, custo
 
 def calcular_custo(posicao_atual, posicao_vizinha):
-    return 1  
+    terreno_atual = grafo[posicao_atual]['terreno']
+    terreno_vizinho = grafo[posicao_vizinha]['terreno']
+    
+    custos = {
+        'solida': 1,
+        'rochosa': 10,
+        'arenosa': 4,
+        'pantano': 20
+    }
 
-if busca_profundidade(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y)):
-    print("Caminho encontrado!")
+    custo_atual = custos.get(terreno_atual, 1)
+    custo_vizinho = custos.get(terreno_vizinho, 1)
+
+    return max(custo_atual, custo_vizinho)
+
+found, custo_acumulado = busca_profundidade(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y))
+
+if found:
+    print(f"Caminho encontrado! Custo total: {custo_acumulado}")
 else:
     print("Caminho não encontrado.")
 
