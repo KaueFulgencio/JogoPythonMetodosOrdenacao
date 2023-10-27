@@ -6,7 +6,8 @@ from busca import carregar_grafo, executar_busca
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (255, 50, 100)
-BLOCK_SIZE = 50
+BLOCK_SIZE = 40
+AGENT_RADIUS = BLOCK_SIZE // 2
 SLEEP_TIME = 1000
 #Dicionario dos terrenos
 TERRENO_CORES = {
@@ -37,7 +38,6 @@ pygame.display.set_caption("Busca em Profundidade")
 
 grafo = carregar_grafo("grafo.py")  
 
-
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
     for pos, data in grafo.items():
@@ -59,7 +59,8 @@ def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0)
         visitados = set()
 
     visitados.add(inicio)
-    pygame.draw.rect(screen, AGENT_COLOR, (inicio[0] * BLOCK_SIZE, inicio[1] * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+    x, y = inicio[0] * BLOCK_SIZE + BLOCK_SIZE // 2, inicio[1] * BLOCK_SIZE + BLOCK_SIZE // 2  # Encontre o centro do bloco
+    pygame.draw.circle(screen, AGENT_COLOR, (x, y), AGENT_RADIUS)  # Desenhe um círculo para representar o agente
     pygame.display.update()
     pygame.time.delay(SLEEP_TIME)
 
@@ -73,7 +74,11 @@ def busca_profundidade(screen, grafo, inicio, objetivo, visitados=None, custo=0)
             if busca_profundidade(screen, grafo, vizinho, objetivo, visitados, custo + calcular_custo(inicio, vizinho)):
                 return True
 
+    pygame.draw.circle(screen, (0, 0, 0), (x, y), AGENT_RADIUS)
+    pygame.display.update()
+
     return False
+
 
 def calcular_custo(posicao_atual, posicao_vizinha):
     return 1  

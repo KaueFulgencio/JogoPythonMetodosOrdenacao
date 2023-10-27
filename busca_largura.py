@@ -1,14 +1,13 @@
 import pygame
 import sys
 from collections import deque
-from busca import carregar_grafo, executar_busca
+from grafo import grafo, recompensas, custos
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (0, 0, 0)
-BLOCK_SIZE = 50
-SLEEP_TIME = 1000
-#Dicionario dos terrenos
+BLOCK_SIZE = 40
+SLEEP_TIME = 100
 TERRENO_CORES = {
     'solida': (139, 69, 19),
     'arenosa': (255, 255, 0),
@@ -17,7 +16,7 @@ TERRENO_CORES = {
     'premio': (255, 0, 0),
     'recompensa': (0, 0, 255)
 }
-# Só aceita valor inteiro vindo do input
+
 try:
     inicio_x = int(sys.argv[1])
     inicio_y = int(sys.argv[2])
@@ -28,17 +27,12 @@ except ValueError:
     sys.exit(1)
 
 pygame.init()
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Busca em Largura")
 
 def fechar_busca_largura():
     pygame.quit()
     sys.exit()
-
-
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Busca em Largura")
-
-grafo = carregar_grafo("grafo.py")
-
 
 def draw_environment(grafo):
     screen.fill(BG_COLOR)
@@ -51,17 +45,12 @@ def draw_environment(grafo):
         for neighbor in data['conexoes']:
             pygame.draw.line(screen, (0, 0, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE), (neighbor[0] * BLOCK_SIZE, neighbor[1] * BLOCK_SIZE))
 
-
-draw_environment(grafo) 
-pygame.display.update()
-
-print(grafo)
-
-def busca_largura(screen, grafo, inicio, objetivo):
+def busca_largura(screen, grafo, inicio, objetivo, custos, recompensas):
     fila = deque()
     visitados = set()
     custo = {inicio: 0}
     posicao = {inicio: inicio}
+    custo_total = 0  
 
     fila.append(inicio)
     visitados.add(inicio)
@@ -81,6 +70,9 @@ def busca_largura(screen, grafo, inicio, objetivo):
         print(f"Posição: ({x}, {y}), Custo: {custo[vertice]}")
 
         if vertice == objetivo:
+            caminho = reconstruir_caminho(posicao, objetivo)
+            print("Caminho percorrido:", caminho)
+            print("Preço final do percurso:", custo_total)  # Exibe o custo total
             return True
 
         for vizinho in grafo[vertice]['conexoes']:
@@ -88,15 +80,22 @@ def busca_largura(screen, grafo, inicio, objetivo):
                 fila.append(vizinho)
                 visitados.add(vizinho)
                 custo[vizinho] = custo[vertice] + calcular_custo(vertice, vizinho)
+                custo_total += custo[vizinho]  
                 posicao[vizinho] = vertice
 
     return False
 
+def reconstruir_caminho(posicao, objetivo):
+    caminho = [objetivo]
+    while objetivo in posicao:
+        objetivo = posicao[objetivo]
+        caminho.insert(0, objetivo)
+    return caminho
 
 def calcular_custo(posicao_atual, posicao_vizinha):
-    return 1
-
-def calcular_custo_terreno(terreno_atual, terreno_vizinho):
+    terreno_atual = grafo[posicao_atual]['terreno']
+    terreno_vizinho = grafo[posicao_vizinha]['terreno']
+    
     custos = {
         'solida': 1,
         'rochosa': 10,
@@ -110,7 +109,26 @@ def calcular_custo_terreno(terreno_atual, terreno_vizinho):
     return max(custo_atual, custo_vizinho)
 
 
-if busca_largura(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y)):
+def calcular_custo_terreno(terreno_atual, terreno_vizinho):
+    custos = {
+        ('solida', 'solida'): 1,
+        ('solida', 'rochosa'): 10,
+        ('solida', 'arenosa'): 4,
+        ('solida', 'pantano'): 20,
+        ('rochosa', 'rochosa'): 10,
+        ('arenosa', 'arenosa'): 4,
+        ('pantano', 'pantano'): 20
+    }
+    return custos.get((terreno_atual, terreno_vizinho), 1)
+
+def carregar_dados():
+    return grafo, recompensas, custos
+
+grafo, recompensas, custos = carregar_dados()
+draw_environment(grafo)  
+pygame.display.update()
+
+if busca_largura(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y), custos, recompensas):
     print("Caminho encontrado!")
 
 while True:

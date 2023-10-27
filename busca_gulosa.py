@@ -6,7 +6,7 @@ from busca import carregar_grafo
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (255, 0, 0)
-BLOCK_SIZE = 50
+BLOCK_SIZE = 40
 SLEEP_TIME = 1000
 TERRENO_CORES = {
     'solida': (139, 69, 19),
@@ -23,7 +23,7 @@ try:
     objetivo_x = int(sys.argv[3])
     objetivo_y = int(sys.argv[4])
 except ValueError:
-    print("Erro: Os valores de início e objetivo devem ser números inteiros válidos.")
+    print("Erro: Os valores de início e objetivo devem ser números inteiros.")
     sys.exit(1)
 
 pygame.init()

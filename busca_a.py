@@ -6,7 +6,8 @@ from busca import carregar_grafo, executar_busca
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 AGENT_COLOR = (155, 0, 100)
-BLOCK_SIZE = 50
+BLOCK_SIZE = 40
+AGENT_RADIUS = BLOCK_SIZE // 2
 SLEEP_TIME = 1000
 #Dicionario dos terrenos 
 TERRENO_CORES = {
@@ -24,7 +25,7 @@ try:
     objetivo_x = int(sys.argv[3])
     objetivo_y = int(sys.argv[4])
 except ValueError:
-    print("Erro: Os valores de início e objetivo devem ser números inteiros válidos.")
+    print("Erro: Os valores de início e objetivo devem ser números inteiros.")
     sys.exit(1)
 
 pygame.init()
@@ -81,7 +82,8 @@ def busca_a(screen, grafo, inicio, objetivo):
 
         visitados.add(vertice)
         x, y = vertice
-        pygame.draw.rect(screen, AGENT_COLOR, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+        x_center, y_center = x * BLOCK_SIZE + BLOCK_SIZE // 2, y * BLOCK_SIZE + BLOCK_SIZE // 2  
+        pygame.draw.circle(screen, AGENT_COLOR, (x_center, y_center), AGENT_RADIUS)  
         pygame.display.update()
         pygame.time.delay(SLEEP_TIME)
 
@@ -98,6 +100,9 @@ def busca_a(screen, grafo, inicio, objetivo):
                     prioridade = novo_custo + calcular_heuristica(vizinho, objetivo)
                     fila_prioridade.put((prioridade, vizinho))
                     posicao[vizinho] = vertice
+
+        pygame.draw.circle(screen, (0, 0, 0), (x_center, y_center), AGENT_RADIUS)
+        pygame.display.update()
 
     return False
 
