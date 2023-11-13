@@ -136,8 +136,8 @@ def calcular_custo_terreno(terreno_atual, terreno_vizinho):
     }
     return custos.get((terreno_atual, terreno_vizinho), 1)
 
-for posicao, recompensa in recompensas.items():
-    print(f"Recompensa em {posicao}: {recompensa}")
+#for posicao, recompensa in recompensas.items():
+#    print(f"Recompensa em {posicao}: {recompensa}")
 
 if busca_a(screen, grafo, (inicio_x, inicio_y), (objetivo_x, objetivo_y), custos, recompensas):
     print("Caminho encontrado!")
